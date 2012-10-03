@@ -24,6 +24,8 @@
 @synthesize savedScopeButtonIndex = _savedScopeButtonIndex;
 @synthesize searchWasActive = _searchWasActive;
 @synthesize searchBar = _searchBar;
+@synthesize filterNonEmail = _filterNonEmail;
+@synthesize showEmails = _showEmails;
 
 #pragma mark -
 #pragma mark Craete addressbook ref
@@ -127,6 +129,15 @@
     CFRelease(allPeople);
     CFRelease(addressBooks);
     
+    if (_filterNonEmail)
+    {
+        NSMutableArray *adCopy=[addressBookTemp mutableCopy];
+        for (TKAddressBook *addressBook in adCopy)
+            if (!addressBook.email)
+                [addressBookTemp removeObject:addressBook];
+    }
+
+    
     // Sort data
     UILocalizedIndexedCollation *theCollation = [UILocalizedIndexedCollation currentCollation];
     for (TKAddressBook *addressBook in addressBookTemp) {
@@ -162,6 +173,8 @@
         _selectedCount = 0;
         _listContent = [NSMutableArray new];
         _filteredListContent = [NSMutableArray new];
+        _filterNonEmail=NO;
+        _showEmails=NO;
     }
     return self;
 }
@@ -263,7 +276,7 @@
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCustomCellID];
 	if (cell == nil)
 	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCustomCellID] autorelease];
+		cell = [[[UITableViewCell alloc] initWithStyle:((_showEmails) ? UITableViewCellStyleSubtitle : UITableViewCellStyleDefault) reuseIdentifier:kCustomCellID] autorelease];
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	}
@@ -280,6 +293,10 @@
         cell.textLabel.font = [UIFont italicSystemFontOfSize:cell.textLabel.font.pointSize];
         cell.textLabel.text = @"No Name";
     }
+    
+    cell.detailTextLabel.text=addressBook.email;
+    
+    
 	
 	UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
 	[button setFrame:CGRectMake(30.0, 0.0, 28, 28)];

@@ -28,6 +28,12 @@
     NSUInteger _selectedCount;
     NSMutableArray *_listContent;
 	NSMutableArray *_filteredListContent;
+    
+    /** Filters out entries without an email address */
+    BOOL _filterNonEmail;
+    
+    /** Controls if emails are shown with contact names */
+    BOOL _showEmails;
 }
 
 @property (nonatomic, retain) id<TKContactsMultiPickerControllerDelegate> delegate;
@@ -38,5 +44,10 @@
 @property (nonatomic) NSInteger savedScopeButtonIndex;
 @property (nonatomic) BOOL searchWasActive;
 
+/** Filters out entries without an email address */
+@property (nonatomic) BOOL filterNonEmail;
+
+/** Controls if emails are shown with contact names */
+@property (nonatomic) BOOL showEmails;
 
 @end
